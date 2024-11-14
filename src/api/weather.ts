@@ -1,60 +1,67 @@
-export interface Coordinates {
-  lat: number;
-  lon: number;
+import { API_CONFIG } from "./config";
+import type {
+  WeatherData,
+  ForecastData,
+  GeocodingResponse,
+  Coordinates,
+} from "./type";
+
+class WeatherAPI {
+  private createUrl(endpoint: string, params: Record<string, string | number>) {
+    const searchParams = new URLSearchParams({
+      appid: API_CONFIG.API_KEY,
+      ...params,
+    });
+    return `${endpoint}?${searchParams.toString()}`;
+  }
+
+  private async fetchData<T>(url: string): Promise<T> {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Weather API Error: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async getCurrentWeather({ lat, lon }: Coordinates): Promise<WeatherData> {
+    const url = this.createUrl(`${API_CONFIG.BASE_URL}/weather`, {
+      lat: lat.toString(),
+      lon: lon.toString(),
+      units: "metric",
+    });
+    return this.fetchData<WeatherData>(url);
+  }
+
+  async getForecast({ lat, lon }: Coordinates): Promise<ForecastData> {
+    const url = this.createUrl(`${API_CONFIG.BASE_URL}/forecast`, {
+      lat: lat.toString(),
+      lon: lon.toString(),
+      units: "metric",
+    });
+    return this.fetchData<ForecastData>(url);
+  }
+
+  async reverseGeocode({
+    lat,
+    lon,
+  }: Coordinates): Promise<GeocodingResponse[]> {
+    const url = this.createUrl(`${API_CONFIG.GEO}/reverse`, {
+      lat: lat.toString(),
+      lon: lon.toString(),
+      limit: "1",
+    });
+    return this.fetchData<GeocodingResponse[]>(url);
+  }
+
+  async searchLocations(query: string): Promise<GeocodingResponse[]> {
+    const url = this.createUrl(`${API_CONFIG.GEO}/direct`, {
+      q: query,
+      limit: "5",
+    });
+    return this.fetchData<GeocodingResponse[]>(url);
+  }
 }
 
-export interface GeocodingResponse {
-  name: string;
-  local_names?: Record<string, string>;
-  lat: number;
-  lon: number;
-  country: string;
-  state?: string;
-}
-
-export interface WeatherCondition {
-  id: number;
-  main: string;
-  description: string;
-  icon: string;
-}
-
-export interface WeatherData {
-  coord: Coordinates;
-  weather: WeatherCondition[];
-  main: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-    humidity: number;
-  };
-  wind: {
-    speed: number;
-    deg: number;
-  };
-  sys: {
-    sunrise: number;
-    sunset: number;
-    country: string;
-  };
-  name: string;
-  dt: number;
-}
-
-export interface ForecastData {
-  list: Array<{
-    dt: number;
-    main: WeatherData["main"];
-    weather: WeatherData["weather"];
-    wind: WeatherData["wind"];
-    dt_txt: string;
-  }>;
-  city: {
-    name: string;
-    country: string;
-    sunrise: number;
-    sunset: number;
-  };
-}
+export const weatherAPI = new WeatherAPI();

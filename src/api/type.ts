@@ -58,5 +58,3 @@ export interface ForecastData {
     sunset: number;
   };
 }
-
-export const 
