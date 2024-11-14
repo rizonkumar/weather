@@ -3,6 +3,15 @@ export interface Coordinates {
   lon: number;
 }
 
+export interface GeocodingResponse {
+  name: string;
+  local_names?: Record<string, string>;
+  lat: number;
+  lon: number;
+  country: string;
+  state?: string;
+}
+
 export interface WeatherCondition {
   id: number;
   main: string;
@@ -11,7 +20,7 @@ export interface WeatherCondition {
 }
 
 export interface WeatherData {
-  coor: Coordinates;
+  coord: Coordinates;
   weather: WeatherCondition[];
   main: {
     temp: number;
@@ -28,8 +37,24 @@ export interface WeatherData {
   sys: {
     sunrise: number;
     sunset: number;
-    countru: string;
+    country: string;
   };
   name: string;
   dt: number;
+}
+
+export interface ForecastData {
+  list: Array<{
+    dt: number;
+    main: WeatherData["main"];
+    weather: WeatherData["weather"];
+    wind: WeatherData["wind"];
+    dt_txt: string;
+  }>;
+  city: {
+    name: string;
+    country: string;
+    sunrise: number;
+    sunset: number;
+  };
 }
