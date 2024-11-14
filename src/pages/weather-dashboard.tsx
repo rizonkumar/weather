@@ -9,67 +9,71 @@ const WeatherDashboard = () => {
     coordinates,
     error: locationError,
     getLocation,
-    isLoading: locationLoading,
+    isLoading,
   } = useGeoLocation();
 
-  const handleRefresh = () => {
-    getLocation();
-    if (coordinates) {
-      // reload weather data
-    }
-  };
+  if (isLoading) return <WeatherSkeleton />;
 
-  if (locationLoading) {
-    return <WeatherSkeleton />;
-  }
-
-  if (locationError) {
+  if (locationError || !coordinates) {
     return (
-      <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Location Error</AlertTitle>
-        <AlertDescription className="flex flex-col gap-4">
-          <p>{locationError}</p>
-          <Button onClick={getLocation} variant={"outline"} className="w-fit">
-            <MapPin className="size-4 mr-2" />
-            Enable Location
-          </Button>
-        </AlertDescription>
-      </Alert>
-    );
-  }
+      <div className="container mx-auto px-4 py-8">
+        <Alert
+          variant="destructive"
+          className="bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900"
+        >
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <div>
+                <AlertTitle className="text-xl font-semibold text-red-700 dark:text-red-300">
+                  {locationError
+                    ? "Location Access Denied"
+                    : "Location Access Required"}
+                </AlertTitle>
+                <AlertDescription className="mt-2 text-base text-red-600/90 dark:text-red-400/90">
+                  Please enable location services to get accurate weather
+                  information for your area.
+                </AlertDescription>
+              </div>
+            </div>
 
-  if (!coordinates) {
-    return (
-      <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Location Required</AlertTitle>
-        <AlertDescription className="flex flex-col gap-4">
-          <p>{"Please enable location to get weather data."}</p>
-          <Button onClick={getLocation} variant={"outline"} className="w-fit">
-            <MapPin className="size-4 mr-2" />
-            Enable Location
-          </Button>
-        </AlertDescription>
-      </Alert>
+            <Button
+              onClick={getLocation}
+              className="w-fit bg-red-600 hover:bg-red-700 text-white border-0"
+            >
+              <MapPin className="size-4 mr-2" />
+              Enable Location Access
+            </Button>
+          </div>
+        </Alert>
+      </div>
     );
   }
 
   return (
-    <div>
-      {/* Favorites Cities */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-l font-bold tracking-tighter">My Location</h1>
+    <main className="container mx-auto px-4 py-6">
+      <div className="flex items-center justify-between mb-8">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            My Location
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Current weather and forecast
+          </p>
+        </div>
+
         <Button
-          variant={"outline"}
-          size={"icon"}
-          disabled={true}
-          onClick={handleRefresh}
+          variant="outline"
+          size="icon"
+          onClick={getLocation}
+          className="hover:bg-gray-100 dark:hover:bg-gray-800"
         >
-          <RefreshCw className="size-4 cursor-pointer" />
+          <RefreshCw className="size-4" />
         </Button>
       </div>
-    </div>
+
+      {/* Weather content will go here */}
+    </main>
   );
 };
 

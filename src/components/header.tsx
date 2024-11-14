@@ -7,29 +7,27 @@ function Header() {
   const isDark = theme === "dark";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur py-2 supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link to={"/"}>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-14 md:h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex-shrink-0">
           <img
             src={isDark ? "/logo.png" : "/logo2.png"}
             alt="klimate logo"
-            className="h-14"
+            className="h-10 md:h-14 w-auto"
           />
         </Link>
-        <div>
-          {/*  Search */}
-          {/*  Theme toggle*/}
-          <div
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            className={`cursor-pointer flex items-center transition-transform duration-500 ${isDark ? "rotate-180" : "rotate-0"}`}
-          >
-            {isDark ? (
-              <Sun className="size-5 text-yellow-500 rotate-0 transition-all" />
-            ) : (
-              <Moon className="size-5 text-blue-500 rotate-0 transition-all" />
-            )}
-          </div>
-        </div>
+
+        <button
+          onClick={() => setTheme(isDark ? "light" : "dark")}
+          className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+        >
+          {isDark ? (
+            <Sun className="size-5 text-yellow-500 transition-all" />
+          ) : (
+            <Moon className="size-5 text-blue-500 transition-all" />
+          )}
+        </button>
       </div>
     </header>
   );
