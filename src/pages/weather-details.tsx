@@ -83,28 +83,33 @@ const WeatherDetails = ({ data }: WeatherDetailsProps) => {
 
   return (
     <Card className="bg-card/30 backdrop-blur-md border-border/50">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-medium flex items-center gap-2">
-          <CloudRain className="h-5 w-5 text-primary" />
+      <CardHeader className="p-3 sm:p-4 md:p-6">
+        <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+          <CloudRain className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           Weather Conditions
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {details.map((detail) => (
+      <CardContent className="p-3 sm:p-4 md:p-6">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+          {details.map((detail, index) => (
             <div
               key={detail.title}
               className={cn(
-                "group flex gap-4 rounded-xl p-4",
+                "group flex gap-3 rounded-xl p-3 sm:p-4",
                 "bg-card/50 border border-border/50",
                 "transition-all duration-300",
                 "hover:bg-card/80 hover:scale-[1.02]",
-                "hover:shadow-lg"
+                "hover:shadow-lg",
+                // Ensure last item spans full width on mobile if odd number of items
+                index === details.length - 1 &&
+                  details.length % 2 !== 0 &&
+                  "xs:col-span-2 lg:col-span-1"
               )}
             >
               <div
                 className={cn(
-                  "p-2.5 rounded-lg",
+                  "shrink-0",
+                  "p-2 sm:p-2.5 rounded-lg",
                   "ring-2 ring-offset-2 ring-offset-background",
                   detail.color,
                   detail.ringColor,
@@ -112,16 +117,16 @@ const WeatherDetails = ({ data }: WeatherDetailsProps) => {
                   "group-hover:ring-offset-4"
                 )}
               >
-                <detail.icon className="h-5 w-5" />
+                <detail.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
-              <div className="flex flex-col justify-center">
-                <p className="text-sm text-muted-foreground font-medium">
+              <div className="flex flex-col justify-center min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground font-medium truncate">
                   {detail.title}
                 </p>
-                <p className="text-xl font-semibold tracking-tight">
+                <p className="text-base sm:text-lg font-semibold tracking-tight truncate">
                   {detail.value}
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 truncate">
                   {detail.description}
                 </p>
               </div>

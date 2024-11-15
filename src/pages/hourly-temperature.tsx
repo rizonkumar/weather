@@ -25,30 +25,34 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
   }));
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-4">
       {/* Temperature Chart */}
       <Card className="bg-card/30 backdrop-blur-md border-border/50">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-medium">
+        <CardHeader className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between p-4 md:p-6">
+          <CardTitle className="text-base sm:text-lg font-medium">
             Temperature Trend
           </CardTitle>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="flex items-center gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-blue-500" />
-              <span className="text-xs text-muted-foreground">Temp</span>
+              <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-blue-500" />
+              <span className="text-xs sm:text-sm text-muted-foreground">
+                Temp
+              </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-gray-400" />
-              <span className="text-xs text-muted-foreground">Feels</span>
+              <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-gray-400" />
+              <span className="text-xs sm:text-sm text-muted-foreground">
+                Feels
+              </span>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="h-[280px] w-full">
+        <CardContent className="p-4 md:p-6">
+          <div className="h-[200px] sm:h-[250px] md:h-[280px] w-full">
             <ResponsiveContainer>
               <LineChart
                 data={chartData}
-                margin={{ top: 20, right: 10, left: -20, bottom: 0 }}
+                margin={{ top: 20, right: 5, left: -20, bottom: 0 }}
               >
                 <CartesianGrid
                   strokeDasharray="3 3"
@@ -62,6 +66,7 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
+                  tick={{ fontSize: "10px", dy: 10 }}
                 />
                 <YAxis
                   stroke="hsl(var(--muted-foreground))"
@@ -70,22 +75,23 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                   axisLine={false}
                   tickFormatter={(value) => `${value}°`}
                   domain={["dataMin - 2", "dataMax + 2"]}
+                  tick={{ fontSize: "10px" }}
                 />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload?.length) {
                       const weatherData = payload[0].payload.weather;
                       return (
-                        <div className="rounded-lg border bg-card/95 backdrop-blur-md p-3 shadow-lg">
-                          <div className="grid gap-2">
+                        <div className="rounded-lg border bg-card/95 backdrop-blur-md p-2 sm:p-3 shadow-lg">
+                          <div className="grid gap-1 sm:gap-2">
                             <div className="flex items-center gap-2">
                               <img
                                 src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
                                 alt={weatherData.description}
-                                className="w-10 h-10"
+                                className="w-8 h-8 sm:w-10 sm:h-10"
                               />
                               <div>
-                                <p className="text-sm font-medium capitalize">
+                                <p className="text-xs sm:text-sm font-medium capitalize">
                                   {weatherData.description}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
@@ -93,20 +99,20 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                                 </p>
                               </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-6 pt-2 text-center">
+                            <div className="grid grid-cols-2 gap-3 sm:gap-6 pt-1 sm:pt-2 text-center">
                               <div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[10px] sm:text-xs text-muted-foreground">
                                   Temperature
                                 </p>
-                                <p className="text-lg font-bold text-blue-500">
+                                <p className="text-sm sm:text-lg font-bold text-blue-500">
                                   {payload[0].value}°
                                 </p>
                               </div>
                               <div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-[10px] sm:text-xs text-muted-foreground">
                                   Feels Like
                                 </p>
-                                <p className="text-lg font-bold text-gray-400">
+                                <p className="text-sm sm:text-lg font-bold text-gray-400">
                                   {payload[1].value}°
                                 </p>
                               </div>
@@ -122,18 +128,18 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                   type="monotone"
                   dataKey="temp"
                   stroke="#3b82f6"
-                  strokeWidth={2.5}
+                  strokeWidth={2}
                   dot={false}
-                  activeDot={{ r: 6, strokeWidth: 0, fill: "#3b82f6" }}
+                  activeDot={{ r: 4, strokeWidth: 0, fill: "#3b82f6" }}
                 />
                 <Line
                   type="monotone"
                   dataKey="feels_like"
                   stroke="#9ca3af"
-                  strokeWidth={2.5}
+                  strokeWidth={2}
                   dot={false}
                   strokeDasharray="5 5"
-                  activeDot={{ r: 6, strokeWidth: 0, fill: "#9ca3af" }}
+                  activeDot={{ r: 4, strokeWidth: 0, fill: "#9ca3af" }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -143,39 +149,45 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
 
       {/* Hourly Forecast Cards */}
       <Card className="bg-card/30 backdrop-blur-md border-border/50">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium">Hourly Forecast</CardTitle>
+        <CardHeader className="p-4 md:p-6">
+          <CardTitle className="text-base sm:text-lg font-medium">
+            Hourly Forecast
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
+        <CardContent className="p-4 md:p-6">
+          <div className="space-y-2 sm:space-y-3 overflow-y-auto max-h-[500px] pr-2">
             {chartData.map((hour, idx) => (
               <div
                 key={idx}
                 className={cn(
-                  "flex items-center justify-between p-3 rounded-lg",
-                  "bg-card/50 border border-border/50",
+                  "flex items-center justify-between p-2 sm:p-3",
+                  "rounded-lg bg-card/50 border border-border/50",
                   "hover:bg-card/80 transition-all duration-200",
-                  "hover:scale-[1.02]"
+                  "hover:scale-[1.02] hover:shadow-lg"
                 )}
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/10">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-md bg-primary/10">
                     <img
                       src={`https://openweathermap.org/img/wn/${hour.weather.icon}@2x.png`}
                       alt={hour.weather.description}
-                      className="h-10 w-10"
+                      className="h-8 w-8 sm:h-10 sm:w-10"
                     />
                   </div>
                   <div>
-                    <p className="font-medium">{hour.time}</p>
-                    <p className="text-sm text-muted-foreground capitalize">
+                    <p className="text-sm sm:text-base font-medium">
+                      {hour.time}
+                    </p>
+                    <p className="text-xs sm:text-sm text-muted-foreground capitalize">
                       {hour.weather.description}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold">{hour.temp}°</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {hour.temp}°
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">
                     Feels like {hour.feels_like}°
                   </div>
                 </div>
