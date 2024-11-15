@@ -9,6 +9,7 @@ import {
   useWeatherQuery,
 } from "@/hooks/use-weather";
 import { AlertTriangle, MapPin, RefreshCw } from "lucide-react";
+import HourlyTemperature from "./hourly-temperature";
 
 const WeatherDashboard = () => {
   const {
@@ -132,41 +133,31 @@ const WeatherDashboard = () => {
   }
 
   return (
-    <main className="container mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-8">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            My Location
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Current weather and forecast
-          </p>
+    <main className="container mx-auto px-4 py-6 space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">My Location</h1>
+          <p className="text-muted-foreground">Current weather and forecast</p>
         </div>
-
         <Button
           variant="outline"
           size="icon"
           onClick={getLocation}
-          className="hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="hover:bg-accent"
           disabled={weatherQuery.isFetching || forecastQuery.isFetching}
         >
           <RefreshCw
-            className={`size-4 ${weatherQuery.isFetching || forecastQuery.isFetching ? "animate-spin" : ""}`}
-            onClick={handleRefresh}
+            className={weatherQuery.isFetching ? "animate-spin" : ""}
           />
         </Button>
       </div>
 
       <div className="grid gap-6">
-        <div>
-          <CurrentWeather
-            data={weatherQuery.data}
-            locationName={locationName}
-          />
-          {/* Current Weather Icon */}
-          {/* Hourly Temperatures */}
+        <CurrentWeather data={weatherQuery.data} locationName={locationName} />
+        <div className="grid gap-6 md:grid-cols-2">
+          <HourlyTemperature data={forecastQuery.data} />
+          {/* Add another component here for balance */}
         </div>
-        <div>{/* Details Forecast */}</div>
       </div>
     </main>
   );
