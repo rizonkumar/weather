@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "@/context/theme-provider.tsx";
 import { Moon, Sun } from "lucide-react";
+import CitySearch from "./city-search";
 
 function Header() {
   const { theme, setTheme } = useTheme();
@@ -17,6 +18,7 @@ function Header() {
           />
         </Link>
 
+        <CitySearch />
         <button
           onClick={() => setTheme(isDark ? "light" : "dark")}
           className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
