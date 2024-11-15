@@ -10,6 +10,8 @@ import {
 } from "@/hooks/use-weather";
 import { AlertTriangle, MapPin, RefreshCw } from "lucide-react";
 import HourlyTemperature from "./hourly-temperature";
+import WeatherDetails from "./weather-details";
+import WeatherForecast from "./weather-forecast";
 
 const WeatherDashboard = () => {
   const {
@@ -56,7 +58,6 @@ const WeatherDashboard = () => {
                 </AlertDescription>
               </div>
             </div>
-
             <Button
               onClick={getLocation}
               className="w-fit bg-red-600 hover:bg-red-700 text-white border-0"
@@ -75,12 +76,11 @@ const WeatherDashboard = () => {
   if (weatherQuery.error || forecastQuery.error) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto text-center space-y-6 bg-gray-50 dark:bg-gray-900/50 p-8 rounded-xl border border-gray-200 dark:border-gray-800">
+        <div className="max-w-2xl mx-auto text-center space-y-6 bg-card/30 backdrop-blur-md p-8 rounded-xl border border-border/50">
           <div className="flex flex-col items-center gap-4">
-            {/* Weather Icon */}
-            <div className="rounded-full bg-gray-100 dark:bg-gray-800 p-4">
+            <div className="rounded-full bg-muted p-4">
               <svg
-                className="w-12 h-12 text-gray-400 dark:text-gray-500"
+                className="w-12 h-12 text-muted-foreground"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -94,30 +94,27 @@ const WeatherDashboard = () => {
               </svg>
             </div>
 
-            {/* Error Message */}
             <div className="space-y-2">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="text-xl font-semibold">
                 Weather Data Unavailable
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 max-w-md">
+              <p className="text-muted-foreground max-w-md">
                 We're unable to fetch the weather information at the moment.
                 This could be due to connection issues or service
                 unavailability.
               </p>
             </div>
 
-            {/* Action Button */}
             <Button
               onClick={handleRefresh}
-              className="mt-4 bg-primary hover:bg-primary/90 text-white flex items-center gap-2"
+              className="mt-4 bg-primary hover:bg-primary/90"
             >
-              <RefreshCw className="size-4" />
+              <RefreshCw className="size-4 mr-2" />
               Refresh Weather Data
             </Button>
           </div>
 
-          {/* Additional Details */}
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+          <p className="text-sm text-muted-foreground mt-4">
             Error:{" "}
             {weatherQuery.error?.message ||
               forecastQuery.error?.message ||
@@ -133,8 +130,8 @@ const WeatherDashboard = () => {
   }
 
   return (
-    <main className="container mx-auto px-4 py-6 space-y-8">
-      <div className="flex items-center justify-between">
+    <main className="container mx-auto px-4 py-6">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">My Location</h1>
           <p className="text-muted-foreground">Current weather and forecast</p>
@@ -142,22 +139,21 @@ const WeatherDashboard = () => {
         <Button
           variant="outline"
           size="icon"
-          onClick={getLocation}
+          onClick={handleRefresh}
           className="hover:bg-accent"
           disabled={weatherQuery.isFetching || forecastQuery.isFetching}
         >
           <RefreshCw
-            className={weatherQuery.isFetching ? "animate-spin" : ""}
+            className={`size-4 ${weatherQuery.isFetching ? "animate-spin" : ""}`}
           />
         </Button>
       </div>
 
       <div className="grid gap-6">
         <CurrentWeather data={weatherQuery.data} locationName={locationName} />
-        <div className="grid gap-6 md:grid-cols-2">
-          <HourlyTemperature data={forecastQuery.data} />
-          {/* Add another component here for balance */}
-        </div>
+        <HourlyTemperature data={forecastQuery.data} />
+        <WeatherDetails data={weatherQuery.data} />
+        <WeatherForecast data={forecastQuery.data} />
       </div>
     </main>
   );
