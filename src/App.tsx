@@ -3,9 +3,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "@/components/layout.tsx";
 import { ThemeProvider } from "@/context/theme-provider.tsx";
 import WeatherDashboard from "@/pages/weather-dashboard.tsx";
-import CityPage from "@/pages/city-page.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { CityPage } from "./pages/city-page";
 
 const queryClient = new QueryClient({
   defaultOptions: {
