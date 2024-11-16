@@ -19,8 +19,7 @@ interface HourlyTemperatureProps {
 const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
   const chartData = data.list.slice(0, 8).map((item) => ({
     time: format(new Date(item.dt * 1000), "ha"),
-    temp: Math.round(item.main.temp),
-    feels_like: Math.round(item.main.feels_like),
+    temp: Math.round(item.main.temp_max),
     weather: item.weather[0],
   }));
 
@@ -37,12 +36,6 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
               <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-blue-500" />
               <span className="text-xs sm:text-sm text-muted-foreground">
                 Temp
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-gray-400" />
-              <span className="text-xs sm:text-sm text-muted-foreground">
-                Feels
               </span>
             </div>
           </div>
@@ -108,14 +101,6 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                                   {payload[0].value}°
                                 </p>
                               </div>
-                              <div>
-                                <p className="text-[10px] sm:text-xs text-muted-foreground">
-                                  Feels Like
-                                </p>
-                                <p className="text-sm sm:text-lg font-bold text-gray-400">
-                                  {payload[1].value}°
-                                </p>
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -131,15 +116,6 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                   strokeWidth={2}
                   dot={false}
                   activeDot={{ r: 4, strokeWidth: 0, fill: "#3b82f6" }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="feels_like"
-                  stroke="#9ca3af"
-                  strokeWidth={2}
-                  dot={false}
-                  strokeDasharray="5 5"
-                  activeDot={{ r: 4, strokeWidth: 0, fill: "#9ca3af" }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -186,9 +162,6 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                 <div className="text-right">
                   <div className="text-lg sm:text-2xl font-bold">
                     {hour.temp}°
-                  </div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">
-                    Feels like {hour.feels_like}°
                   </div>
                 </div>
               </div>

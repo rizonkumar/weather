@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Viewer, Entity, ImageryLayer } from 'resium';
-import * as Cesium from '@cesium/engine';
+import { Cartesian3, Color, Math, UrlTemplateImageryProvider, Camera, Scene, Viewer as CesiumViewer } from '@cesium/engine';
 import { Card, CardContent } from './ui/card';
 import { Switch } from './ui/switch';
 import { Label } from './ui/label';
@@ -30,7 +30,7 @@ interface LayerControl {
 }
 
 const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3DProps) => {
-  const viewerRef = useRef<Cesium.Viewer | null>(null);
+  const viewerRef = useRef<CesiumViewer | null>(null);
   const [layers, setLayers] = useState<LayerControl[]>([
     { id: 'temp', label: 'Temperature', type: 'temp', enabled: true },
     { id: 'precipitation', label: 'Precipitation', type: 'precipitation', enabled: true },
@@ -44,17 +44,17 @@ const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3D
   useEffect(() => {
     if (viewerRef.current) {
       // Remove sky, atmosphere, and space background
-      viewerRef.current.scene.skyBox.show = false;
-      viewerRef.current.scene.sun.show = false;
-      viewerRef.current.scene.moon.show = false;
-      viewerRef.current.scene.skyAtmosphere.show = false;
-      viewerRef.current.scene.globe.enableLighting = false;
-      viewerRef.current.scene.fog.enabled = false;
-      viewerRef.current.scene.backgroundColor = Cesium.Color.WHITE;
-      viewerRef.current.scene.globe.baseColor = Cesium.Color.WHITE;
+      const scene = viewerRef.current.scene as Scene;
+      scene.sun.show = false;
+      scene.moon.show = false;
+      scene.skyAtmosphere.show = false;
+      scene.globe.enableLighting = false;
+      scene.fog.enabled = false;
+      scene.backgroundColor = Color.WHITE;
+      scene.globe.baseColor = Color.WHITE;
 
       // Set initial camera position with smooth animation
-      const destination = Cesium.Cartesian3.fromDegrees(
+      const destination = Cartesian3.fromDegrees(
         center[0],
         center[1],
         zoom * 50000
@@ -62,17 +62,18 @@ const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3D
 
       const orientation = {
         heading: 0.0,
-        pitch: -Cesium.Math.PI_OVER_TWO,
+        pitch: -Math.PI_OVER_TWO,
         roll: 0.0
       };
 
-      (viewerRef.current.scene.camera as Cesium.Camera).flyTo({
+      (viewerRef.current.scene.camera as Camera).flyTo({
         destination,
         orientation,
         duration: 1.5,
         complete: () => {
           if (viewerRef.current) {
-            viewerRef.current.scene.globe.depthTestAgainstTerrain = false;
+            const scene = viewerRef.current.scene as Scene;
+            scene.globe.depthTestAgainstTerrain = false;
           }
         }
       });
@@ -159,22 +160,25 @@ const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3D
         >
           {/* Base map layer */}
           <ImageryLayer
-            imageryProvider={new Cesium.OpenStreetMapImageryProvider({
-              url: 'https://tile.openstreetmap.org/'
+            imageryProvider={new UrlTemplateImageryProvider({
+              url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              minimumLevel: 0,
+              maximumLevel: 18,
+              credit: ''
             })}
           />
 
           {/* Center point marker */}
           <Entity
-            position={Cesium.Cartesian3.fromDegrees(center[0], center[1])}
-            point={{ pixelSize: 10, color: Cesium.Color.BLUE }}
+            position={Cartesian3.fromDegrees(center[0], center[1])}
+            point={{ pixelSize: 10, color: Color.BLUE }}
           />
           
           {/* Weather layers */}
           {layers.filter(layer => layer.enabled).map(layer => (
             <ImageryLayer
               key={layer.id}
-              imageryProvider={new Cesium.UrlTemplateImageryProvider({
+              imageryProvider={new UrlTemplateImageryProvider({
                 url: `https://tile.openweathermap.org/map/${layer.type}/{z}/{x}/{y}.png?appid=${apiKey}`,
                 minimumLevel: 0,
                 maximumLevel: 18,
@@ -191,7 +195,7 @@ const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3D
         <button
           onClick={() => {
             if (viewerRef.current) {
-              const camera = viewerRef.current.scene.camera as Cesium.Camera;
+              const camera = viewerRef.current.scene.camera as Camera;
               const currentHeight = camera.positionCartographic.height;
               camera.zoomIn(currentHeight * 0.5);
             }
@@ -207,7 +211,7 @@ const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3D
         <button
           onClick={() => {
             if (viewerRef.current) {
-              const camera = viewerRef.current.scene.camera as Cesium.Camera;
+              const camera = viewerRef.current.scene.camera as Camera;
               const currentHeight = camera.positionCartographic.height;
               camera.zoomOut(currentHeight * 0.5);
             }
@@ -222,16 +226,16 @@ const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3D
         <button
           onClick={() => {
             if (viewerRef.current) {
-              const camera = viewerRef.current.scene.camera as Cesium.Camera;
+              const camera = viewerRef.current.scene.camera as Camera;
               camera.flyTo({
-                destination: Cesium.Cartesian3.fromDegrees(
+                destination: Cartesian3.fromDegrees(
                   center[0],
                   center[1],
                   zoom * 50000
                 ),
                 orientation: {
                   heading: 0.0,
-                  pitch: -Cesium.Math.PI_OVER_TWO,
+                  pitch: -Math.PI_OVER_TWO,
                   roll: 0.0
                 },
                 duration: 1.5
