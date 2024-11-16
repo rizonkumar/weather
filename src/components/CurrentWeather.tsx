@@ -1,4 +1,4 @@
-import { CurrentWeatherProps, GeocodingResponse, WeatherData } from "@/api/type";
+import { CurrentWeatherProps } from "@/api/type";
 import { Card, CardContent } from "./ui/card";
 import {
   ArrowDown,
