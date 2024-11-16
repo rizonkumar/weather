@@ -29,16 +29,16 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
         {/* Location Header */}
         <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 md:mb-6">
           <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-primary/10">
-            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-primary" />
+            <MapPin className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-primary" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-lg md:text-xl font-semibold text-foreground">
+            <h2 className="text-xs sm:text-base md:text-lg lg:text-xl font-semibold text-foreground">
               {locationName?.name}
               <span className="text-muted-foreground font-normal">
                 , {locationName?.state}
               </span>
             </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground">
+            <p className="text-[10px] sm:text-sm text-muted-foreground">
               {locationName?.country}
             </p>
           </div>
@@ -49,29 +49,29 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
             {/* Temperature Display */}
             <div>
               <div className="flex flex-row items-start gap-2 sm:gap-4">
-                <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground">
+                <div className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-foreground">
                   {formatTemperature(temp)}
                 </div>
-                <div className="mt-1 sm:mt-2">
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                <div className="mt-0.5 sm:mt-2">
+                  <p className="text-[10px] sm:text-sm text-muted-foreground">
                     Feels like
                   </p>
-                  <p className="text-sm sm:text-lg md:text-xl font-medium text-foreground">
+                  <p className="text-xs sm:text-base md:text-lg lg:text-xl font-medium text-foreground">
                     {formatTemperature(feels_like)}
                   </p>
                 </div>
               </div>
 
               {/* Min/Max Temperature */}
-              <div className="flex gap-2 sm:gap-4 mt-2 md:mt-4">
+              <div className="flex gap-2 sm:gap-4 mt-1 sm:mt-2 md:mt-4">
                 <TemperatureIndicator
-                  icon={<ArrowDown className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                  icon={<ArrowDown className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
                   value={temp_min}
                   label="Min"
                   variant="blue"
                 />
                 <TemperatureIndicator
-                  icon={<ArrowUp className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                  icon={<ArrowUp className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
                   value={temp_max}
                   label="Max"
                   variant="red"
@@ -80,23 +80,23 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
             </div>
 
             {/* Weather Metrics */}
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-3 gap-1 sm:gap-3 md:gap-4">
               <MetricCard
-                icon={<Droplet className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                icon={<Droplet className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
                 label="Humidity"
                 value={humidity}
                 unit="%"
                 color="blue"
               />
               <MetricCard
-                icon={<Wind className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                icon={<Wind className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
                 label="Wind Speed"
                 value={speed}
                 unit="m/s"
                 color="cyan"
               />
               <MetricCard
-                icon={<Gauge className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                icon={<Gauge className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
                 label="Pressure"
                 value={pressure}
                 unit="hPa"
@@ -141,29 +141,32 @@ interface TemperatureIndicatorProps {
   variant: "blue" | "red";
 }
 
+const formatTemperature = (temp: number) => `${temp.toFixed(1)}°C`;
+
 const TemperatureIndicator = ({
   icon,
   value,
   label,
   variant,
-}: TemperatureIndicatorProps) => (
-  <div className="flex items-center gap-1.5">
-    <span
+}: TemperatureIndicatorProps) => {
+  return (
+    <div
       className={cn(
-        "flex items-center justify-center",
-        "w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full",
-        variant === "blue"
-          ? "bg-blue-500/10 text-blue-500"
-          : "bg-red-500/10 text-red-500"
+        "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg",
+        "border border-border/50",
+        "bg-card/50",
+        variant === "blue" && "text-blue-500",
+        variant === "red" && "text-red-500"
       )}
     >
       {icon}
-    </span>
-    <span className="text-xs sm:text-sm font-medium">
-      {label}: {value.toFixed(1)}°C
-    </span>
-  </div>
-);
+      <div>
+        <p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p>
+        <p className="text-xs sm:text-sm font-medium">{formatTemperature(value)}</p>
+      </div>
+    </div>
+  );
+};
 
 interface MetricCardProps {
   icon: React.ReactNode;
@@ -182,37 +185,23 @@ const MetricCard = ({
   color,
   className,
 }: MetricCardProps) => {
-  const colorStyles = {
-    blue: "bg-blue-500/10 text-blue-500",
-    cyan: "bg-cyan-500/10 text-cyan-500",
-    purple: "bg-purple-500/10 text-purple-500",
-  };
-
   return (
     <div
       className={cn(
-        "group flex items-center gap-2 sm:gap-3 p-3 sm:p-4",
-        "rounded-xl bg-card/50",
-        "border border-border/50",
-        "transition-all duration-300",
-        "hover:bg-card/80 hover:scale-[1.02]",
-        "hover:shadow-lg",
+        "flex flex-col items-center gap-0.5 sm:gap-1 p-1.5 sm:p-2 md:p-3 rounded-lg",
+        "bg-card/50 border border-border/50",
+        color === "blue" && "text-blue-500",
+        color === "cyan" && "text-cyan-500",
+        color === "purple" && "text-purple-500",
         className
       )}
     >
-      <div
-        className={cn(
-          "p-1.5 sm:p-2 rounded-full transition-colors duration-300",
-          colorStyles[color]
-        )}
-      >
-        {icon}
-      </div>
-      <div>
-        <p className="text-xs sm:text-sm text-muted-foreground">{label}</p>
-        <p className="text-base sm:text-lg font-medium text-foreground">
+      {icon}
+      <p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p>
+      <div className="text-center">
+        <p className="text-xs sm:text-sm md:text-base font-medium">
           {value}
-          <span className="text-xs sm:text-sm ml-1 text-muted-foreground">
+          <span className="text-[10px] sm:text-xs font-normal text-muted-foreground ml-0.5">
             {unit}
           </span>
         </p>
