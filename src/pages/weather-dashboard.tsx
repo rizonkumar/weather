@@ -130,11 +130,11 @@ const WeatherDashboard = () => {
   }
 
   return (
-    <main className="container mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6">
+    <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-4 sm:mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">My Location</h1>
-          <p className="text-muted-foreground">Current weather and forecast</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">My Location</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Current weather and forecast</p>
         </div>
         <Button
           variant="outline"
@@ -149,7 +149,7 @@ const WeatherDashboard = () => {
         </Button>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-4 sm:gap-6">
         <CurrentWeather data={weatherQuery.data} locationName={locationName} />
         <HourlyTemperature data={forecastQuery.data} />
         <WeatherDetails data={weatherQuery.data} />

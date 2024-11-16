@@ -46,14 +46,14 @@ const CitySearch = () => {
     <>
       <Button
         variant="outline"
-        className="relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
+        className="relative w-full justify-start text-xs sm:text-sm text-muted-foreground sm:pr-12 truncate"
         onClick={() => setOpen(true)}
       >
-        <Search className="mr-2 h-4 w-4" />
-        Search cities...
+        <Search className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+        <span className="truncate">Search cities...</span>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <Command>
+        <Command className="rounded-lg border shadow-md">
           <CommandInput
             placeholder="Search cities..."
             value={query}
@@ -72,17 +72,16 @@ const CitySearch = () => {
                     key={city.id}
                     value={`${city.lat}|${city.lon}|${city.name}|${city.country}`}
                     onSelect={handleSelect}
+                    className="px-2 py-2.5"
                   >
-                    <Star className="mr-2 h-4 w-4 text-yellow-500" />
-                    <span>{city.name}</span>
-                    {city.state && (
-                      <span className="text-sm text-muted-foreground">
-                        , {city.state}
-                      </span>
-                    )}
-                    <span className="text-sm text-muted-foreground">
-                      , {city.country}
-                    </span>
+                    <Star className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500 flex-shrink-0" />
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-1.5 truncate">
+                      <span className="font-medium truncate">{city.name}</span>
+                      <div className="flex items-center text-xs text-muted-foreground truncate">
+                        {city.state && <span className="truncate">{city.state}, </span>}
+                        <span className="truncate">{city.country}</span>
+                      </div>
+                    </div>
                   </CommandItem>
                 ))}
               </CommandGroup>
