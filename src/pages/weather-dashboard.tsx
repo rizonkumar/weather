@@ -108,8 +108,6 @@ const WeatherDashboard = ({ className }: WeatherDashboardProps) => {
     );
   }
 
-  const locationName = locationQuery.data?.[0].name;
-
   if (weatherQuery.error || forecastQuery.error) {
     return (
       <div className="container mx-auto px-4 py-12">
@@ -212,12 +210,7 @@ const WeatherDashboard = ({ className }: WeatherDashboardProps) => {
       <div className="grid gap-4 sm:gap-6">
         <CurrentWeather
           data={weatherQuery.data}
-          locationName={locationName ? {
-            name: locationName,
-            lat: coordinates?.lat ?? 0,
-            lon: coordinates?.lon ?? 0,
-            country: "Unknown"
-          } : undefined}
+          locationName={locationQuery.data?.[0]}
           isFavorite={
             coordinates ? isFavorite(coordinates.lat, coordinates.lon) : false
           }
