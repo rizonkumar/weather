@@ -44,18 +44,28 @@ export interface WeatherData {
 }
 
 export interface ForecastData {
-  list: Array<{
+  list: {
     dt: number;
-    main: WeatherData["main"];
-    weather: WeatherData["weather"];
-    wind: WeatherData["wind"];
-    dt_txt: string;
-  }>;
+    main: {
+      temp_min: number;
+      temp_max: number;
+      humidity: number;
+    };
+    wind: {
+      speed: number;
+    };
+    weather: Array<{
+      id: number;
+      main: string;
+      description: string;
+      icon: string;
+    }>;
+  }[];
   city: {
-    name: string;
-    country: string;
-    sunrise: number;
-    sunset: number;
+    coord: {
+      lat: number;
+      lon: number;
+    };
   };
 }
 

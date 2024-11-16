@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cesium/engine": "^12.0.1",
+    "@cesium/widgets": "^9.0.1",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
@@ -40,6 +42,8 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tanstack/react-query": "^5.60.2",
     "@tanstack/react-query-devtools": "^5.60.2",
+    "@types/ol": "^6.5.3",
+    "cesium": "^1.123.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
@@ -48,6 +52,7 @@
     "input-otp": "^1.4.1",
     "lucide-react": "^0.456.0",
     "next-themes": "^0.4.3",
+    "ol": "^10.2.1",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -55,6 +60,7 @@
     "react-resizable-panels": "^2.1.6",
     "react-router-dom": "^6.28.0",
     "recharts": "^2.13.3",
+    "resium": "^1.18.3",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",

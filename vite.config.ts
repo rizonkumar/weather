@@ -1,28 +1,30 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 1600,
     rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'recharts'],
-          ui: [
-            '@/components/ui/button',
-            '@/components/ui/card',
-            '@/components/ui/input',
-            '@/components/ui/select',
-          ],
-        },
-      },
+      external: ['cesium'],
     },
   },
-})
+  optimizeDeps: {
+    include: [
+      '@cesium/engine',
+      'resium',
+      'cesium'
+    ],
+    exclude: ['@cesium/engine']
+  },
+  define: {
+    CESIUM_BASE_URL: JSON.stringify('/node_modules/cesium/Build/Cesium'),
+  },
+});
