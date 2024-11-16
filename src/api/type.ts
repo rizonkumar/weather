@@ -79,3 +79,18 @@ export interface FavoriteCity {
   state?: string;
   addedAt: number;
 }
+
+export interface FavoriteCityTabletProps {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  onRemove: (id: string) => void;
+}
+
+export interface CurrentWeatherProps {
+  data: WeatherData;
+  locationName?: GeocodingResponse;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+}

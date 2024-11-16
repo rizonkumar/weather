@@ -2,11 +2,11 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useWeatherQuery, useForecastQuery } from "@/hooks/use-weather";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import WeatherSkeleton from "../components/loading-skeleton";
 import { FavoriteButton } from "@/components/favourite-button";
 import WeatherForecast from "./weather-forecast";
 import WeatherDetails from "./weather-details";
 import HourlyTemperature from "./hourly-temperature";
+import { WeatherSkeleton } from "@/components/loading-skeleton";
 import CurrentWeather from "@/components/CurrentWeather";
 
 export function CityPage() {
@@ -49,7 +49,12 @@ export function CityPage() {
       </div>
 
       <div className="grid gap-6">
-        <CurrentWeather data={weatherQuery.data} />
+        <CurrentWeather 
+          data={weatherQuery.data} 
+          isFavorite={false} 
+          onToggleFavorite={() => {
+          }}
+        />
         <HourlyTemperature data={forecastQuery.data} />
         <div className="grid gap-6 md:grid-cols-2 items-start">
           <WeatherDetails data={weatherQuery.data} />

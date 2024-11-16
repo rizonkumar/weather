@@ -1,5 +1,6 @@
 import { Skeleton } from "./ui/skeleton";
 import { Card, CardContent, CardHeader } from "./ui/card";
+import { ScrollBar, ScrollArea } from "./ui/scroll-area";
 
 function HourlyTemperatureSkeleton() {
   return (
@@ -153,8 +154,7 @@ function WeatherForecastSkeleton() {
   );
 }
 
-// Current Weather Skeleton
-export function CurrentWeatherSkeleton() {
+function CurrentWeatherSkeleton() {
   return (
     <Card className="bg-card/30 backdrop-blur-md border-border/50">
       <CardContent className="p-2 sm:p-4 md:p-6 lg:p-8">
@@ -220,6 +220,38 @@ export function CurrentWeatherSkeleton() {
   );
 }
 
+function FavoriteCitiesSkeleton() {
+  return (
+    <div className="w-full space-y-4">
+      <Skeleton className="h-6 w-40" />
+      <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex w-max space-x-4 p-1">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="relative flex min-w-[200px] md:min-w-[250px] items-center gap-2 md:gap-3 
+                rounded-lg border bg-card p-3 md:p-4 pr-6 md:pr-8"
+            >
+              <div className="space-y-2">
+                <Skeleton className="h-4 md:h-5 w-24 md:w-32" />
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <Skeleton className="h-3 md:h-4 w-16 md:w-20" />
+                </div>
+              </div>
+              <div className="ml-auto text-right space-y-1">
+                <Skeleton className="h-5 md:h-6 w-12 md:w-16" />
+                <Skeleton className="h-3 md:h-4 w-20 md:w-24" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </div>
+  );
+}
+
 // Main Weather Skeleton
 function WeatherSkeleton() {
   return (
@@ -250,4 +282,11 @@ function WeatherSkeleton() {
   );
 }
 
-export default WeatherSkeleton;
+export { 
+  WeatherSkeleton,
+  WeatherDetailsSkeleton,
+  WeatherForecastSkeleton,
+  HourlyTemperatureSkeleton,
+  FavoriteCitiesSkeleton,
+  CurrentWeatherSkeleton
+};
