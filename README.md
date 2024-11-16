@@ -1,50 +1,107 @@
-# React + TypeScript + Vite
+# Weather Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive weather application built with React and TypeScript that provides real-time weather information using the OpenWeather API.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🌡️ Real-time weather data display
+- 📍 Location-based weather information
+- 🔍 Search functionality for any city worldwide
+- 📱 Responsive design for all devices
+- 🌓 Dark/Light theme support
+- 🎨 Modern UI with Radix UI components
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React 18.3
+- TypeScript
+- Vite
+- Radix UI Components
+- TanStack Query (React Query)
+- OpenWeather API
+- Tailwind CSS
+- Lucide React Icons
 
-- Configure the top-level `parserOptions` property like this:
+## Prerequisites
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+Before you begin, ensure you have the following installed:
+- Node.js (v18 or higher)
+- npm or yarn
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone [your-repository-url]
+cd weather
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Install dependencies:
+```bash
+npm install
 ```
+
+3. Create a `.env` file in the root directory and add your OpenWeather API key:
+```env
+VITE_OPENWEATHER_API_KEY=your_api_key_here
+```
+
+## Running the Application
+
+To start the development server:
+```bash
+npm run dev
+```
+
+To build for production:
+```bash
+npm run build
+```
+
+To preview the production build:
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```
+weather/
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── lib/           # Utility functions and configurations
+│   ├── hooks/         # Custom React hooks
+│   ├── types/         # TypeScript type definitions
+│   └── app.tsx        # Main application component
+├── public/            # Static assets
+└── ...config files
+```
+
+## Environment Variables
+
+The application requires the following environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| VITE_OPENWEATHER_API_KEY | Your OpenWeather API key |
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Future Enhancements
+
+- [ ] Weather forecasts for multiple days
+- [ ] Weather alerts and notifications
+- [ ] Multiple location saving
+- [ ] Weather maps integration
+- [ ] More detailed weather metrics
+- [ ] Weather history data
+
+## License
+
+This project is licensed under the MIT License.
