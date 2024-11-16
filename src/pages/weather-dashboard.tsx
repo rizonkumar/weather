@@ -1,5 +1,4 @@
 import CurrentWeather from "@/components/CurrentWeather";
-import WeatherSkeleton from "@/components/loading-skeleton";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useGeoLocation } from "@/hooks/use-geoLocation";
@@ -12,14 +11,25 @@ import { AlertTriangle, MapPin, RefreshCw } from "lucide-react";
 import HourlyTemperature from "./hourly-temperature";
 import WeatherDetails from "./weather-details";
 import WeatherForecast from "./weather-forecast";
+import { FavoriteCities } from "./favourite-cities";
+import { Separator } from "@/components/ui/separator";
+import { useFavorites } from "@/hooks/use-favorite";
+import { toast } from "sonner";
+import { WeatherSkeleton } from "@/components/loading-skeleton";
 
-const WeatherDashboard = () => {
+interface WeatherDashboardProps {
+  className?: string;
+}
+
+const WeatherDashboard = ({ className }: WeatherDashboardProps) => {
   const {
     coordinates,
     error: locationError,
     getLocation,
     isLoading,
   } = useGeoLocation();
+
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   const locationQuery = useReverseGeocodeQuery(coordinates);
   const forecastQuery = useForecastQuery(coordinates);
@@ -34,11 +44,38 @@ const WeatherDashboard = () => {
     }
   };
 
+  const handleToggleFavorite = () => {
+    if (coordinates && locationQuery.data?.[0]) {
+      const cityId = `${coordinates.lat}-${coordinates.lon}`;
+      const locationName = locationQuery.data[0].name;
+      if (isFavorite(coordinates.lat, coordinates.lon)) {
+        removeFavorite.mutate(cityId);
+        toast.success(`Removed ${locationName} from favorites`);
+      } else {
+        addFavorite.mutate({
+          name: locationName,
+          lat: coordinates.lat,
+          lon: coordinates.lon,
+          country: locationQuery.data[0].country,
+        });
+        toast.success(`Added ${locationName} to favorites`);
+      }
+    }
+  };
+
+  const showFavorites = favorites && favorites.length > 0;
+
   if (isLoading) return <WeatherSkeleton />;
 
   if (locationError || !coordinates) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        {showFavorites && (
+          <>
+            <FavoriteCities />
+            <Separator className="my-6" />
+          </>
+        )}
         <Alert
           variant="destructive"
           className="bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900"
@@ -71,11 +108,15 @@ const WeatherDashboard = () => {
     );
   }
 
-  const locationName = locationQuery.data?.[0];
-
   if (weatherQuery.error || forecastQuery.error) {
     return (
       <div className="container mx-auto px-4 py-12">
+        {showFavorites && (
+          <>
+            <FavoriteCities />
+            <Separator className="my-6" />
+          </>
+        )}
         <div className="max-w-2xl mx-auto text-center space-y-6 bg-card/30 backdrop-blur-md p-8 rounded-xl border border-border/50">
           <div className="flex flex-col items-center gap-4">
             <div className="rounded-full bg-muted p-4">
@@ -130,11 +171,24 @@ const WeatherDashboard = () => {
   }
 
   return (
-    <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+    <main
+      className={`container mx-auto px-3 sm:px-4 py-4 sm:py-6 ${className}`}
+    >
+      {showFavorites && (
+        <>
+          <FavoriteCities />
+          <Separator className="my-6" />
+        </>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-4 sm:mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground">My Location</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Current weather and forecast</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">
+            My Location
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Current weather and forecast
+          </p>
         </div>
         <Button
           variant="outline"
@@ -144,13 +198,24 @@ const WeatherDashboard = () => {
           disabled={weatherQuery.isFetching || forecastQuery.isFetching}
         >
           <RefreshCw
-            className={`size-4 ${weatherQuery.isFetching ? "animate-spin" : ""}`}
+            className={`size-4 ${
+              weatherQuery.isFetching || forecastQuery.isFetching
+                ? "animate-spin"
+                : ""
+            }`}
           />
         </Button>
       </div>
 
       <div className="grid gap-4 sm:gap-6">
-        <CurrentWeather data={weatherQuery.data} locationName={locationName} />
+        <CurrentWeather
+          data={weatherQuery.data}
+          locationName={locationQuery.data?.[0]}
+          isFavorite={
+            coordinates ? isFavorite(coordinates.lat, coordinates.lon) : false
+          }
+          onToggleFavorite={handleToggleFavorite}
+        />
         <HourlyTemperature data={forecastQuery.data} />
         <WeatherDetails data={weatherQuery.data} />
         <WeatherForecast data={forecastQuery.data} />

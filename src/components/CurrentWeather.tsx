@@ -1,14 +1,24 @@
-import { GeocodingResponse, WeatherData } from "@/api/type";
+import { CurrentWeatherProps, GeocodingResponse, WeatherData } from "@/api/type";
 import { Card, CardContent } from "./ui/card";
-import { ArrowDown, ArrowUp, Droplet, Wind, Gauge, MapPin } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Droplet,
+  Wind,
+  Gauge,
+  MapPin,
+  Heart,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
-interface CurrentWeatherProps {
-  data: WeatherData;
-  locationName?: GeocodingResponse;
-}
 
-const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
+const CurrentWeather = ({
+  data,
+  locationName,
+  isFavorite,
+  onToggleFavorite,
+}: CurrentWeatherProps) => {
   const {
     weather: [currentWeather],
     main: { temp, feels_like, temp_min, temp_max, humidity, pressure },
@@ -16,7 +26,8 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
   } = data;
 
   const formatTemperature = (temp: number) => `${temp.toFixed(1)}°C`;
-
+  console.log("locationName",locationName);
+  console.log('Current Weather',data)
   return (
     <Card
       className={cn(
@@ -27,24 +38,49 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
     >
       <CardContent className="p-2 sm:p-4 md:p-6 lg:p-8">
         {/* Location Header */}
-        <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 md:mb-6">
-          <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-primary/10">
-            <MapPin className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-primary" />
+        <div className="flex items-center justify-between mb-2 sm:mb-4 md:mb-6">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="p-1 sm:p-1.5 md:p-2 rounded-full bg-primary/10">
+              <MapPin className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-xs sm:text-base md:text-lg lg:text-xl font-semibold text-foreground">
+                {locationName?.name}
+                <span className="text-muted-foreground font-normal">
+                  , {locationName?.state}
+                </span>
+              </h2>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">
+                
+                {locationName?.country}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xs sm:text-base md:text-lg lg:text-xl font-semibold text-foreground">
-              {locationName?.name}
-              <span className="text-muted-foreground font-normal">
-                , {locationName?.state}
-              </span>
-            </h2>
-            <p className="text-[10px] sm:text-sm text-muted-foreground">
-              {locationName?.country}
-            </p>
-          </div>
+
+          {/* Favorite Button */}
+          <Button
+            variant={isFavorite ? "default" : "outline"}
+            size="icon"
+            className={cn(
+              "h-8 w-8 rounded-full",
+              isFavorite && "bg-red-500 hover:bg-red-600"
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite();
+            }}
+          >
+            <Heart
+              className={cn(
+                "h-4 w-4",
+                isFavorite ? "fill-current" : "text-red-500"
+              )}
+            />
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-2 sm:gap-4 md:gap-6">
+          {/* Rest of your existing code remains the same */}
           <div className="space-y-2 sm:space-y-4 md:space-y-6">
             {/* Temperature Display */}
             <div>
@@ -65,13 +101,17 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
               {/* Min/Max Temperature */}
               <div className="flex gap-2 sm:gap-4 mt-1 sm:mt-2 md:mt-4">
                 <TemperatureIndicator
-                  icon={<ArrowDown className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                  icon={
+                    <ArrowDown className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                  }
                   value={temp_min}
                   label="Min"
                   variant="blue"
                 />
                 <TemperatureIndicator
-                  icon={<ArrowUp className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                  icon={
+                    <ArrowUp className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                  }
                   value={temp_max}
                   label="Max"
                   variant="red"
@@ -82,21 +122,27 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
             {/* Weather Metrics */}
             <div className="grid grid-cols-3 gap-1 sm:gap-3 md:gap-4">
               <MetricCard
-                icon={<Droplet className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                icon={
+                  <Droplet className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                }
                 label="Humidity"
                 value={humidity}
                 unit="%"
                 color="blue"
               />
               <MetricCard
-                icon={<Wind className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                icon={
+                  <Wind className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                }
                 label="Wind Speed"
                 value={speed}
                 unit="m/s"
                 color="cyan"
               />
               <MetricCard
-                icon={<Gauge className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />}
+                icon={
+                  <Gauge className="h-2.5 w-2.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                }
                 label="Pressure"
                 value={pressure}
                 unit="hPa"
@@ -162,7 +208,9 @@ const TemperatureIndicator = ({
       {icon}
       <div>
         <p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p>
-        <p className="text-xs sm:text-sm font-medium">{formatTemperature(value)}</p>
+        <p className="text-xs sm:text-sm font-medium">
+          {formatTemperature(value)}
+        </p>
       </div>
     </div>
   );
