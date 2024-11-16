@@ -1,16 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocalStorage } from "./use-local-storage.tsx";
-
-interface SearchHistoryItem {
-  id: string;
-  query: string;
-  lat: number;
-  lon: number;
-  name: string;
-  country: string;
-  state?: string;
-  searchedAt: number;
-}
+import { SearchHistoryItem } from "@/api/type.ts";
 
 export function useSearchHistory() {
   const [history, setHistory] = useLocalStorage<SearchHistoryItem[]>(

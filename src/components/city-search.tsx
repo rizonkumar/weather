@@ -78,7 +78,9 @@ const CitySearch = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-1.5 truncate">
                       <span className="font-medium truncate">{city.name}</span>
                       <div className="flex items-center text-xs text-muted-foreground truncate">
-                        {city.state && <span className="truncate">{city.state}, </span>}
+                        {city.state && (
+                          <span className="truncate">{city.state}, </span>
+                        )}
                         <span className="truncate">{city.country}</span>
                       </div>
                     </div>
