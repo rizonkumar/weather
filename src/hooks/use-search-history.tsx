@@ -25,8 +25,9 @@ export function useSearchHistory() {
         searchedAt: Date.now(),
       };
 
+      const currentHistory = Array.isArray(history) ? history : [];
       // Remove duplicates and keep only last 10 searches
-      const filteredHistory = history.filter(
+      const filteredHistory = currentHistory.filter(
         (item) => !(item.lat === search.lat && item.lon === search.lon)
       );
       const newHistory = [newSearch, ...filteredHistory].slice(0, 10);
@@ -50,7 +51,7 @@ export function useSearchHistory() {
   });
 
   return {
-    history: historyQuery.data ?? [],
+    history: Array.isArray(historyQuery.data) ? historyQuery.data : [],
     addToHistory,
     clearHistory,
   };
