@@ -9,7 +9,7 @@ function Header() {
   const isDark = theme === "dark";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
       <div className="container mx-auto flex h-14 md:h-16 items-center gap-2 sm:gap-4 px-2 sm:px-4 lg:px-8">
         <Link to="/" className="flex-shrink-0">
           <Logo className="scale-90 sm:scale-100" />

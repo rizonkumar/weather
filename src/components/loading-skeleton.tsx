@@ -6,7 +6,7 @@ function HourlyTemperatureSkeleton() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-3 sm:gap-6">
       {/* Temperature Chart Skeleton */}
-      <Card className="bg-card/30 backdrop-blur-md border-border/50">
+      <Card className="bg-card border-border shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between p-2 sm:p-4 pb-2">
           <Skeleton className="h-4 sm:h-6 w-24 sm:w-40" />
           <div className="flex gap-2 sm:gap-4">
@@ -40,7 +40,7 @@ function HourlyTemperatureSkeleton() {
       </Card>
 
       {/* Hourly Forecast Cards Skeleton */}
-      <Card className="bg-card/30 backdrop-blur-md border-border/50">
+      <Card className="bg-card border-border shadow-sm">
         <CardHeader className="p-2 sm:p-4">
           <Skeleton className="h-4 sm:h-6 w-24 sm:w-40" />
         </CardHeader>
@@ -49,7 +49,7 @@ function HourlyTemperatureSkeleton() {
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-card/50 border border-border/50"
+                className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-muted/40 border border-border"
               >
                 <div className="flex items-center gap-2 sm:gap-3">
                   <Skeleton className="h-8 w-8 sm:h-12 sm:w-12 rounded-md" />
@@ -74,7 +74,7 @@ function HourlyTemperatureSkeleton() {
 // Weather Details Skeleton
 function WeatherDetailsSkeleton() {
   return (
-    <Card className="bg-card/30 backdrop-blur-md border-border/50">
+    <Card className="bg-card border-border shadow-sm">
       <CardHeader className="p-2 sm:p-4 pb-2 sm:pb-4">
         <div className="flex items-center gap-1.5 sm:gap-2">
           <Skeleton className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -86,7 +86,7 @@ function WeatherDetailsSkeleton() {
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="flex gap-2 sm:gap-4 rounded-xl p-2 sm:p-4 bg-card/50 border border-border/50"
+              className="flex gap-2 sm:gap-4 rounded-xl p-2 sm:p-4 bg-muted/40 border border-border"
             >
               <Skeleton className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg" />
               <div className="flex-1">
@@ -105,7 +105,7 @@ function WeatherDetailsSkeleton() {
 // Weather Forecast Skeleton
 function WeatherForecastSkeleton() {
   return (
-    <Card className="bg-card/30 backdrop-blur-md border-border/50">
+    <Card className="bg-card border-border shadow-sm">
       <CardHeader className="p-2 sm:p-4 pb-2 sm:pb-4">
         <div className="flex items-center gap-1.5 sm:gap-2">
           <Skeleton className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -117,7 +117,7 @@ function WeatherForecastSkeleton() {
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 rounded-xl bg-card/50 border border-border/50"
+              className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-4 rounded-xl bg-muted/40 border border-border"
             >
               <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-0">
                 <Skeleton className="h-8 w-8 sm:h-12 sm:w-12 rounded-xl" />
@@ -156,7 +156,7 @@ function WeatherForecastSkeleton() {
 
 function CurrentWeatherSkeleton() {
   return (
-    <Card className="bg-card/30 backdrop-blur-md border-border/50">
+    <Card className="bg-card border-border shadow-sm">
       <CardContent className="p-2 sm:p-4 md:p-6 lg:p-8">
         {/* Location Header */}
         <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 md:mb-6">
@@ -197,7 +197,7 @@ function CurrentWeatherSkeleton() {
             {/* Weather Metrics */}
             <div className="grid grid-cols-3 gap-1 sm:gap-3 md:gap-4">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="p-1.5 sm:p-3 rounded-lg bg-card/50 border border-border/50 space-y-1">
+                <div key={i} className="p-1.5 sm:p-3 rounded-lg bg-muted/40 border border-border space-y-1">
                   <Skeleton className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 rounded-full" />
                   <Skeleton className="h-2.5 sm:h-4 w-10 sm:w-16" />
                   <Skeleton className="h-3.5 sm:h-5 w-6 sm:w-10" />
@@ -230,7 +230,7 @@ function FavoriteCitiesSkeleton() {
             <div
               key={i}
               className="relative flex min-w-[200px] md:min-w-[250px] items-center gap-2 md:gap-3 
-                rounded-lg border bg-card p-3 md:p-4 pr-6 md:pr-8"
+                rounded-lg border border-border bg-card p-3 md:p-4 pr-6 md:pr-8"
             >
               <div className="space-y-2">
                 <Skeleton className="h-4 md:h-5 w-24 md:w-32" />

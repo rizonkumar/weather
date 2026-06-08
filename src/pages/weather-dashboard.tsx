@@ -1,6 +1,7 @@
 import CurrentWeather from "@/components/CurrentWeather";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { useGeoLocation } from "@/hooks/use-geoLocation";
 import {
   useForecastQuery,
@@ -117,7 +118,7 @@ const WeatherDashboard = ({ className }: WeatherDashboardProps) => {
             <Separator className="my-6" />
           </>
         )}
-        <div className="max-w-2xl mx-auto text-center space-y-6 bg-card/30 backdrop-blur-md p-8 rounded-xl border border-border/50">
+        <div className="max-w-2xl mx-auto text-center space-y-6 bg-card p-8 rounded-xl border border-border shadow-sm">
           <div className="flex flex-col items-center gap-4">
             <div className="rounded-full bg-muted p-4">
               <svg
@@ -207,19 +208,63 @@ const WeatherDashboard = ({ className }: WeatherDashboardProps) => {
         </Button>
       </div>
 
-      <div className="grid gap-4 sm:gap-6">
-        <CurrentWeather
-          data={weatherQuery.data}
-          locationName={locationQuery.data?.[0]}
-          isFavorite={
-            coordinates ? isFavorite(coordinates.lat, coordinates.lon) : false
+      <motion.div 
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.08
+            }
           }
-          onToggleFavorite={handleToggleFavorite}
-        />
-        <HourlyTemperature data={forecastQuery.data} />
-        <WeatherDetails data={weatherQuery.data} />
-        <WeatherForecast data={forecastQuery.data} />
-      </div>
+        }}
+        initial="hidden"
+        animate="show"
+        className="grid gap-4 sm:gap-6"
+      >
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+          }}
+        >
+          <CurrentWeather
+            data={weatherQuery.data}
+            locationName={locationQuery.data?.[0]}
+            isFavorite={
+              coordinates ? isFavorite(coordinates.lat, coordinates.lon) : false
+            }
+            onToggleFavorite={handleToggleFavorite}
+          />
+        </motion.div>
+        
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+          }}
+        >
+          <HourlyTemperature data={forecastQuery.data} />
+        </motion.div>
+        
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+          }}
+        >
+          <WeatherDetails data={weatherQuery.data} />
+        </motion.div>
+        
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+          }}
+        >
+          <WeatherForecast data={forecastQuery.data} />
+        </motion.div>
+      </motion.div>
     </main>
   );
 };
