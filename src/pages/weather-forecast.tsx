@@ -1,5 +1,5 @@
 import { ForecastData } from "@/api/type";
-import { ArrowDown, ArrowUp, Droplets, Wind, Calendar } from "lucide-react";
+import { ArrowDown, ArrowUp, Droplets, Wind, Calendar, CloudRain } from "lucide-react";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -21,12 +21,16 @@ interface DailyForecast {
     description: string;
     icon: string;
   };
+  max_pop: number;
+  total_rain: number;
 }
 
 const WeatherForecast = ({ data }: WeatherForecastProps) => {
   const dailyForecasts = data.list.reduce(
     (acc, forecast) => {
       const date = format(new Date(forecast.dt * 1000), "yyyy-MM-dd");
+      const pop = forecast.pop ?? 0;
+      const rain = forecast.rain?.["3h"] ?? 0;
 
       if (!acc[date]) {
         acc[date] = {
@@ -36,6 +40,8 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
           wind: forecast.wind.speed,
           weather: forecast.weather[0],
           date: forecast.dt,
+          max_pop: pop,
+          total_rain: rain,
         };
       } else {
         acc[date].temp_min = Math.min(
@@ -46,6 +52,8 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
           acc[date].temp_max,
           forecast.main.temp_max
         );
+        acc[date].max_pop = Math.max(acc[date].max_pop, pop);
+        acc[date].total_rain += rain;
       }
 
       return acc;
@@ -118,9 +126,18 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
                       <p className="text-sm sm:text-base font-medium">
                         {format(new Date(day.date * 1000), "EEE, MMM d")}
                       </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground capitalize">
-                        {day.weather.description}
-                      </p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <p className="text-xs sm:text-sm text-muted-foreground capitalize truncate max-w-[120px] sm:max-w-none">
+                          {day.weather.description}
+                        </p>
+                        {day.max_pop > 0 && (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] sm:text-xs text-blue-500 font-medium bg-blue-500/10 px-1.5 py-0.5 rounded-full shrink-0">
+                            <CloudRain className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                            {Math.round(day.max_pop * 100)}%
+                            {day.total_rain > 0 && ` (${day.total_rain.toFixed(1)}mm)`}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 

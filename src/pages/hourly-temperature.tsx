@@ -2,6 +2,7 @@ import { ForecastData } from "@/api/type";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { CloudRain } from "lucide-react";
 import {
   CartesianGrid,
   Line,
@@ -21,6 +22,9 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
     time: format(new Date(item.dt * 1000), "ha"),
     temp: Math.round(item.main.temp_max),
     weather: item.weather[0],
+    pop: item.pop ?? 0,
+    humidity: item.main.humidity,
+    wind: item.wind.speed,
   }));
 
   return (
@@ -92,13 +96,29 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                                 </p>
                               </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-3 sm:gap-6 pt-1 sm:pt-2 text-center">
+                            <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-1.5 sm:pt-2 border-t border-border/50 text-center">
                               <div>
                                 <p className="text-[10px] sm:text-xs text-muted-foreground">
-                                  Temperature
+                                  Temp
                                 </p>
-                                <p className="text-sm sm:text-lg font-bold text-blue-500">
+                                <p className="text-xs sm:text-sm font-bold text-blue-500">
                                   {payload[0].value}°
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-[10px] sm:text-xs text-muted-foreground">
+                                  Humidity
+                                </p>
+                                <p className="text-xs sm:text-sm font-bold text-sky-500">
+                                  {payload[0].payload.humidity}%
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-[10px] sm:text-xs text-muted-foreground">
+                                  Precip.
+                                </p>
+                                <p className="text-xs sm:text-sm font-bold text-blue-400">
+                                  {Math.round(payload[0].payload.pop * 100)}%
                                 </p>
                               </div>
                             </div>
@@ -154,9 +174,17 @@ const HourlyTemperature = ({ data }: HourlyTemperatureProps) => {
                     <p className="text-sm sm:text-base font-medium">
                       {hour.time}
                     </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground capitalize">
-                      {hour.weather.description}
-                    </p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <p className="text-xs sm:text-sm text-muted-foreground capitalize">
+                        {hour.weather.description}
+                      </p>
+                      {hour.pop > 0 && (
+                        <span className="inline-flex items-center gap-0.5 text-[10px] text-blue-500 font-medium bg-blue-500/10 px-1.5 py-0.5 rounded-full shrink-0">
+                          <CloudRain className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                          {Math.round(hour.pop * 100)}%
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="text-right">

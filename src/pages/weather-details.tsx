@@ -4,7 +4,8 @@ import {
   Gauge,
   Wind,
   Droplets,
-  Sun,
+  Eye,
+  Cloud,
   CloudRain,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -17,7 +18,7 @@ interface WeatherDetailsProps {
 }
 
 const WeatherDetails = ({ data }: WeatherDetailsProps) => {
-  const { wind, main, sys } = data;
+  const { wind, main, sys, visibility, clouds } = data;
 
   const formatTime = (timestamp: number) => {
     return format(new Date(timestamp * 1000), "h:mm a");
@@ -29,6 +30,37 @@ const WeatherDetails = ({ data }: WeatherDetailsProps) => {
       Math.round(((degree %= 360) < 0 ? degree + 360 : degree) / 45) % 8;
     return directions[index];
   };
+
+  const getVisibilityDesc = (vis?: number) => {
+    if (vis === undefined) return "N/A";
+    if (vis >= 10000) return "Perfect clarity";
+    if (vis >= 7000) return "Clear view";
+    if (vis >= 4000) return "Light haze";
+    if (vis >= 1000) return "Moderate fog";
+    return "Heavy mist/fog";
+  };
+
+  const getCloudCoverDesc = (cloudsAll?: number) => {
+    if (cloudsAll === undefined) return "N/A";
+    if (cloudsAll === 0) return "Clear skies";
+    if (cloudsAll <= 20) return "Fair skies";
+    if (cloudsAll <= 50) return "Partly cloudy";
+    if (cloudsAll <= 85) return "Mostly cloudy";
+    return "Overcast";
+  };
+
+  const windDirection = getWindDirection(wind.deg);
+  const windGusts = wind.gust ? ` (Gusts ${wind.gust} m/s)` : "";
+  const windDescription = `${windDirection}${windGusts}`;
+
+  let pressureDescription = "Atmospheric";
+  if (main.sea_level && main.grnd_level) {
+    pressureDescription = `Sea: ${main.sea_level} hPa | Ground: ${main.grnd_level} hPa`;
+  } else if (main.sea_level) {
+    pressureDescription = `Sea level: ${main.sea_level} hPa`;
+  } else if (main.grnd_level) {
+    pressureDescription = `Ground level: ${main.grnd_level} hPa`;
+  }
 
   const details = [
     {
@@ -53,7 +85,7 @@ const WeatherDetails = ({ data }: WeatherDetailsProps) => {
       icon: Wind,
       color: "bg-cyan-500/10 text-cyan-500",
       ringColor: "ring-cyan-500/20",
-      description: getWindDirection(wind.deg),
+      description: windDescription,
     },
     {
       title: "Air Pressure",
@@ -61,7 +93,7 @@ const WeatherDetails = ({ data }: WeatherDetailsProps) => {
       icon: Gauge,
       color: "bg-purple-500/10 text-purple-500",
       ringColor: "ring-purple-500/20",
-      description: "Atmospheric",
+      description: pressureDescription,
     },
     {
       title: "Humidity",
@@ -72,12 +104,20 @@ const WeatherDetails = ({ data }: WeatherDetailsProps) => {
       description: "Moisture level",
     },
     {
-      title: "UV Index",
-      value: "Moderate",
-      icon: Sun,
-      color: "bg-yellow-500/10 text-yellow-500",
-      ringColor: "ring-yellow-500/20",
-      description: "Moderate exposure",
+      title: "Visibility",
+      value: visibility !== undefined ? `${(visibility / 1000).toFixed(1)} km` : "N/A",
+      icon: Eye,
+      color: "bg-emerald-500/10 text-emerald-500",
+      ringColor: "ring-emerald-500/20",
+      description: getVisibilityDesc(visibility),
+    },
+    {
+      title: "Cloud Cover",
+      value: clouds ? `${clouds.all}%` : "N/A",
+      icon: Cloud,
+      color: "bg-indigo-500/10 text-indigo-500",
+      ringColor: "ring-indigo-500/20",
+      description: getCloudCoverDesc(clouds?.all),
     },
   ];
 
