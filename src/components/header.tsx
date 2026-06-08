@@ -3,15 +3,16 @@ import { useTheme } from "@/context/theme-provider.tsx";
 import { Moon, Sun } from "lucide-react";
 import CitySearch from "./city-search";
 import { Logo } from "./logo";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Header() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
-      <div className="container mx-auto flex h-14 md:h-16 items-center gap-2 sm:gap-4 px-2 sm:px-4 lg:px-8">
-        <Link to="/" className="flex-shrink-0">
+    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/85 backdrop-blur-md">
+      <div className="container mx-auto flex h-14 md:h-16 items-center gap-2.5 sm:gap-4 px-3 sm:px-4 lg:px-8">
+        <Link to="/" className="flex-shrink-0 transition-opacity hover:opacity-90">
           <Logo className="scale-90 sm:scale-100" />
         </Link>
 
@@ -19,20 +20,33 @@ function Header() {
           <CitySearch />
         </div>
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => setTheme(isDark ? "light" : "dark")}
-          className="flex-shrink-0 rounded-full p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="flex-shrink-0 rounded-xl p-2 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border/30"
           aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
         >
-          {isDark ? (
-            <Sun className="h-4 w-4 sm:size-5 text-yellow-500 transition-all" />
-          ) : (
-            <Moon className="h-4 w-4 sm:size-5 text-blue-500 transition-all" />
-          )}
-        </button>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={theme}
+              initial={{ rotate: -90, opacity: 0, scale: 0.75 }}
+              animate={{ rotate: 0, opacity: 1, scale: 1 }}
+              exit={{ rotate: 90, opacity: 0, scale: 0.75 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              {isDark ? (
+                <Sun className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-amber-500" />
+              ) : (
+                <Moon className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-indigo-500" />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </motion.button>
       </div>
     </header>
   );
 }
 
 export default Header;
+

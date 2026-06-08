@@ -151,39 +151,40 @@ const WeatherDetails = ({ data }: WeatherDetailsProps) => {
                 hidden: { opacity: 0, y: 10 },
                 show: { opacity: 1, y: 0 }
               }}
-              whileHover={{ scale: 1.015, y: -2 }}
+              whileHover="hover"
               className={cn(
                 "group flex gap-3 rounded-xl p-3 sm:p-4",
-                "bg-muted/40 border border-border",
-                "transition-colors duration-200",
-                "hover:bg-muted/80 hover:border-primary/20 cursor-default",
+                "bg-muted/20 border border-border/80",
+                "transition-all duration-300",
+                "hover:bg-muted/50 hover:border-primary/20 cursor-default",
                 // Ensure last item spans full width on mobile if odd number of items
                 index === details.length - 1 &&
                   details.length % 2 !== 0 &&
                   "xs:col-span-2 lg:col-span-1"
               )}
             >
-              <div
+              <motion.div
+                variants={{
+                  hover: { scale: 1.12, rotate: [0, -10, 10, 0], transition: { duration: 0.45, ease: "easeInOut" } }
+                }}
                 className={cn(
                   "shrink-0",
-                  "p-2 sm:p-2.5 rounded-lg",
-                  "ring-1 ring-border ring-offset-1 ring-offset-background",
+                  "p-2 sm:p-2.5 rounded-xl",
+                  "border border-border/10",
                   detail.color,
-                  detail.ringColor,
-                  "transition-all duration-300",
-                  "group-hover:ring-offset-2"
+                  "transition-all duration-300"
                 )}
               >
                 <detail.icon className="h-4 w-4 sm:h-5 sm:w-5" />
-              </div>
+              </motion.div>
               <div className="flex flex-col justify-center min-w-0">
-                <p className="text-xs sm:text-sm text-muted-foreground font-semibold truncate">
+                <p className="text-[10px] sm:text-xs text-muted-foreground font-bold tracking-wider uppercase truncate">
                   {detail.title}
                 </p>
-                <p className="text-base sm:text-lg font-bold tracking-tight text-foreground truncate">
+                <p className="text-base sm:text-lg font-black tracking-tight text-foreground truncate mt-0.5">
                   {detail.value}
                 </p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 font-medium truncate">
+                <p className="text-[10px] sm:text-xs text-muted-foreground/80 mt-0.5 font-medium truncate">
                   {detail.description}
                 </p>
               </div>

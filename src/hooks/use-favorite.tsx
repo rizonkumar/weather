@@ -1,18 +1,21 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocalStorage } from "./use-local-storage";
 import { FavoriteCity } from "@/api/type";
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useLocalStorage<FavoriteCity[]>(
-    "favorites",
-    []
-  );
   const queryClient = useQueryClient();
 
   const favoritesQuery = useQuery({
     queryKey: ["favorites"],
-    queryFn: () => favorites,
-    initialData: favorites,
+    queryFn: () => {
+      const item = window.localStorage.getItem("favorites");
+      if (!item) return [];
+      try {
+        const parsed = JSON.parse(item);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    },
     staleTime: Infinity,
   });
 
@@ -24,39 +27,37 @@ export function useFavorites() {
         addedAt: Date.now(),
       };
 
-      const currentFavorites = Array.isArray(favorites) ? favorites : [];
+      const currentFavorites = favoritesQuery.data || [];
       const exists = currentFavorites.some((fav) => fav.id === newFavorite.id);
       if (exists) return currentFavorites;
 
       const newFavorites = [...currentFavorites, newFavorite];
-      setFavorites(newFavorites);
+      window.localStorage.setItem("favorites", JSON.stringify(newFavorites));
       return newFavorites;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    onSuccess: (data) => {
+      queryClient.setQueryData(["favorites"], data);
     },
   });
 
   const removeFavorite = useMutation({
     mutationFn: async (cityId: string) => {
-      const currentFavorites = Array.isArray(favorites) ? favorites : [];
+      const currentFavorites = favoritesQuery.data || [];
       const newFavorites = currentFavorites.filter((city) => city.id !== cityId);
-      setFavorites(newFavorites);
+      window.localStorage.setItem("favorites", JSON.stringify(newFavorites));
       return newFavorites;
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    onSuccess: (data) => {
+      queryClient.setQueryData(["favorites"], data);
     },
   });
 
   return {
-    favorites: Array.isArray(favoritesQuery.data) ? favoritesQuery.data : [],
+    favorites: favoritesQuery.data || [],
     addFavorite,
     removeFavorite,
     isFavorite: (lat: number, lon: number) => {
-      const currentFavorites = Array.isArray(favorites) ? favorites : [];
-      return currentFavorites.some((city) => city.lat === lat && city.lon === lon);
+      return (favoritesQuery.data || []).some((city) => city.lat === lat && city.lon === lon);
     },
   };
 }
