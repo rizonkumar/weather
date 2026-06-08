@@ -7,6 +7,8 @@ import { useFavorites } from "@/hooks/use-favorite";
 import { toast } from "sonner";
 import { FavoriteCityTabletProps } from "@/api/type";
 import { motion, AnimatePresence } from "framer-motion";
+import WeatherIcon from "@/components/weather-icon";
+import { cn } from "@/lib/utils";
 
 function FavoriteCityTablet({
   id,
@@ -22,59 +24,79 @@ function FavoriteCityTablet({
     navigate(`/city/${name}?lat=${lat}&lon=${lon}`);
   };
 
+  const getWeatherGlowClass = (iconCode: string) => {
+    const code = iconCode?.slice(0, 2);
+    switch (code) {
+      case "01": return "weather-glow-clear";
+      case "02":
+      case "03":
+      case "04": return "weather-glow-clouds";
+      case "09":
+      case "10": return "weather-glow-rain";
+      case "11": return "weather-glow-thunder";
+      case "13": return "weather-glow-snow";
+      case "50": return "weather-glow-mist";
+      default: return "";
+    }
+  };
+
+  const ambientGlowClass = weather ? getWeatherGlowClass(weather.weather[0].icon) : "";
+
   return (
     <motion.div
       layout
       initial={{ opacity: 0, scale: 0.95, y: 5 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
-      whileHover={{ scale: 1.02, y: -1 }}
+      whileHover={{ scale: 1.03, y: -2 }}
       whileTap={{ scale: 0.98 }}
       onClick={handleClick}
-      className="relative flex min-w-[200px] md:min-w-[250px] cursor-pointer items-center gap-2 md:gap-3 
-        rounded-lg border border-border bg-card p-3 md:p-4 pr-7 md:pr-9 shadow-sm transition-all hover:shadow-md hover:border-primary/20"
+      className={cn(
+        "relative flex min-w-[200px] md:min-w-[250px] cursor-pointer items-center gap-2.5 md:gap-4",
+        "rounded-xl border border-border bg-card/50 backdrop-blur-sm p-3 md:p-4 pr-9 md:pr-11",
+        "shadow-sm transition-all duration-300 hover:shadow-md hover:bg-card",
+        ambientGlowClass
+      )}
       role="button"
       tabIndex={0}
     >
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-1 top-1 h-5 w-5 rounded-full p-0 opacity-60 hover:opacity-100 hover:bg-muted text-muted-foreground hover:text-destructive"
+        className="absolute right-1.5 top-1.5 h-5 w-5 rounded-full p-0 opacity-40 hover:opacity-100 hover:bg-muted text-muted-foreground hover:text-destructive transition-all duration-200 z-20"
         onClick={(e) => {
           e.stopPropagation();
           onRemove(id);
           toast.error(`Removed ${name} from Favorites`);
         }}
       >
-        <X className="h-3.5 w-3.5" />
+        <X className="h-3 w-3" />
       </Button>
 
       {isLoading ? (
-        <div className="flex h-8 w-full items-center justify-center">
+        <div className="flex h-10 w-full items-center justify-center">
           <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
         </div>
       ) : weather ? (
         <>
-          <div className="flex items-center gap-1.5 md:gap-2">
-            <img
-              src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
-              alt={weather.weather[0].description}
-              className="h-7 w-7 md:h-9 md:w-9"
-            />
-            <div>
-              <p className="text-sm md:text-base font-bold truncate max-w-[100px] md:max-w-[140px]">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center justify-center p-1.5 rounded-xl bg-muted/40 border border-border/20">
+              <WeatherIcon iconCode={weather.weather[0].icon} size={32} className="md:w-9 md:h-9" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm md:text-base font-extrabold text-foreground truncate max-w-[100px] md:max-w-[120px] tracking-tight leading-tight">
                 {name}
               </p>
-              <p className="text-[10px] md:text-xs text-muted-foreground font-medium">
+              <p className="text-[10px] md:text-xs text-muted-foreground font-semibold uppercase mt-0.5 tracking-wider">
                 {weather.sys.country}
               </p>
             </div>
           </div>
-          <div className="ml-auto text-right">
-            <p className="text-base md:text-lg font-black text-foreground">
+          <div className="ml-auto text-right pl-2">
+            <p className="text-base md:text-lg font-black text-foreground leading-none">
               {Math.round(weather.main.temp)}°
             </p>
-            <p className="text-[10px] md:text-xs capitalize text-muted-foreground truncate max-w-[80px] md:max-w-[110px] font-medium">
+            <p className="text-[9px] md:text-[10px] capitalize text-muted-foreground truncate max-w-[70px] md:max-w-[90px] font-semibold mt-1 tracking-wide">
               {weather.weather[0].description}
             </p>
           </div>
@@ -92,12 +114,12 @@ export function FavoriteCities() {
   }
 
   return (
-    <div className="w-full px-1 py-2">
-      <h2 className="text-sm md:text-base font-bold tracking-tight text-foreground/80 mb-3 px-1">
+    <div className="w-full px-1 py-1">
+      <h2 className="text-xs sm:text-sm font-bold tracking-wider text-muted-foreground uppercase mb-3 px-1">
         Favorite Cities
       </h2>
       <ScrollArea className="w-full pb-2">
-        <div className="flex gap-2.5 md:gap-4 p-1">
+        <div className="flex gap-3 md:gap-4 p-1">
           <AnimatePresence mode="popLayout">
             {favorites.map((city) => (
               <FavoriteCityTablet
@@ -113,3 +135,4 @@ export function FavoriteCities() {
     </div>
   );
 }
+
