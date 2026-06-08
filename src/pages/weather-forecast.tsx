@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import WeatherMap3D from "@/components/WeatherMap3D";
+import { motion } from "framer-motion";
 
 interface WeatherForecastProps {
   data: ForecastData;
@@ -67,9 +68,9 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
   return (
     <div className="space-y-4">
       {/* Weather Map Card */}
-      <Card className="bg-card/30 backdrop-blur-md border-border/50">
+      <Card className="bg-card border-border shadow-sm">
         <CardHeader className="p-3 sm:p-4">
-          <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+          <CardTitle className="text-base sm:text-lg font-bold flex items-center gap-2">
             <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             Weather Map
           </CardTitle>
@@ -91,31 +92,47 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
       </Card>
 
       {/* 5-Day Forecast Card */}
-      <Card className="bg-card/30 backdrop-blur-md border-border/50">
+      <Card className="bg-card border-border shadow-sm">
         <CardHeader className="p-3 sm:p-4">
-          <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+          <CardTitle className="text-base sm:text-lg font-bold flex items-center gap-2">
             <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             5-Day Forecast
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3 sm:p-4">
-          <div className="grid gap-2 sm:gap-3">
+          <motion.div 
+            variants={{
+              hidden: {},
+              show: {
+                transition: {
+                  staggerChildren: 0.04
+                }
+              }
+            }}
+            initial="hidden"
+            animate="show"
+            className="grid gap-2 sm:gap-3"
+          >
             {nextDays.map((day) => (
-              <div
+              <motion.div
                 key={day.date}
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  show: { opacity: 1, y: 0 }
+                }}
+                whileHover={{ scale: 1.015, x: 2 }}
                 className={cn(
                   "group p-3 sm:p-4 rounded-xl",
-                  "bg-card/50 border border-border/50",
-                  "transition-all duration-300",
-                  "hover:bg-card/80 hover:scale-[1.02]",
-                  "hover:shadow-lg"
+                  "bg-muted/40 border border-border",
+                  "transition-colors duration-200",
+                  "hover:bg-muted/80 hover:border-primary/20 cursor-default"
                 )}
               >
                 {/* Main Content Container */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                   {/* Date and Weather Icon */}
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-primary/10 shrink-0">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-primary/5 border border-primary/10 shrink-0">
                       <img
                         src={`https://openweathermap.org/img/wn/${day.weather.icon}@2x.png`}
                         alt={day.weather.description}
@@ -123,7 +140,7 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
                       />
                     </div>
                     <div>
-                      <p className="text-sm sm:text-base font-medium">
+                      <p className="text-sm sm:text-base font-bold">
                         {format(new Date(day.date * 1000), "EEE, MMM d")}
                       </p>
                       <div className="flex items-center gap-1.5 mt-0.5">
@@ -131,7 +148,7 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
                           {day.weather.description}
                         </p>
                         {day.max_pop > 0 && (
-                          <span className="inline-flex items-center gap-0.5 text-[10px] sm:text-xs text-blue-500 font-medium bg-blue-500/10 px-1.5 py-0.5 rounded-full shrink-0">
+                          <span className="inline-flex items-center gap-0.5 text-[10px] sm:text-xs text-blue-600 dark:text-blue-400 font-bold bg-blue-500/10 px-1.5 py-0.5 rounded-full shrink-0">
                             <CloudRain className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                             {Math.round(day.max_pop * 100)}%
                             {day.total_rain > 0 && ` (${day.total_rain.toFixed(1)}mm)`}
@@ -147,11 +164,11 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
                     <div className="flex gap-4 sm:gap-6 col-span-2 sm:col-span-1 justify-center sm:justify-start">
                       {/* Min Temp */}
                       <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-0.5">
+                        <p className="text-xs text-muted-foreground font-medium mb-0.5">
                           Min
                         </p>
-                        <div className="flex items-center text-blue-500 font-semibold">
-                          <ArrowDown className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <div className="flex items-center text-blue-600 dark:text-blue-400 font-bold">
+                          <ArrowDown className="h-3.5 w-3.5 mr-1" />
                           <span className="text-sm sm:text-base">
                             {formatTemp(day.temp_min)}
                           </span>
@@ -160,11 +177,11 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
 
                       {/* Max Temp */}
                       <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-0.5">
+                        <p className="text-xs text-muted-foreground font-medium mb-0.5">
                           Max
                         </p>
-                        <div className="flex items-center text-red-500 font-semibold">
-                          <ArrowUp className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <div className="flex items-center text-red-600 dark:text-red-400 font-bold">
+                          <ArrowUp className="h-3.5 w-3.5 mr-1" />
                           <span className="text-sm sm:text-base">
                             {formatTemp(day.temp_max)}
                           </span>
@@ -175,23 +192,23 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
                     {/* Humidity and Wind */}
                     <div className="flex justify-between sm:justify-start sm:gap-6 sm:border-l sm:border-border sm:pl-6">
                       <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-0.5">
+                        <p className="text-xs text-muted-foreground font-medium mb-0.5">
                           Humidity
                         </p>
-                        <div className="flex items-center justify-center text-sky-500">
-                          <Droplets className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          <span className="text-sm sm:text-base font-semibold">
+                        <div className="flex items-center justify-center text-sky-600 dark:text-sky-400">
+                          <Droplets className="h-3.5 w-3.5 mr-1" />
+                          <span className="text-sm sm:text-base font-bold">
                             {day.humidity}%
                           </span>
                         </div>
                       </div>
                       <div className="text-center">
-                        <p className="text-xs text-muted-foreground mb-0.5">
+                        <p className="text-xs text-muted-foreground font-medium mb-0.5">
                           Wind
                         </p>
-                        <div className="flex items-center justify-center text-emerald-500">
-                          <Wind className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          <span className="text-sm sm:text-base font-semibold">
+                        <div className="flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                          <Wind className="h-3.5 w-3.5 mr-1" />
+                          <span className="text-sm sm:text-base font-bold">
                             {day.wind}m/s
                           </span>
                         </div>
@@ -199,9 +216,9 @@ const WeatherForecast = ({ data }: WeatherForecastProps) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </CardContent>
       </Card>
     </div>
