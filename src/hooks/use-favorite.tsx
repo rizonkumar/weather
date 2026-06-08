@@ -24,10 +24,11 @@ export function useFavorites() {
         addedAt: Date.now(),
       };
 
-      const exists = favorites.some((fav) => fav.id === newFavorite.id);
-      if (exists) return favorites;
+      const currentFavorites = Array.isArray(favorites) ? favorites : [];
+      const exists = currentFavorites.some((fav) => fav.id === newFavorite.id);
+      if (exists) return currentFavorites;
 
-      const newFavorites = [...favorites, newFavorite];
+      const newFavorites = [...currentFavorites, newFavorite];
       setFavorites(newFavorites);
       return newFavorites;
     },
@@ -38,7 +39,8 @@ export function useFavorites() {
 
   const removeFavorite = useMutation({
     mutationFn: async (cityId: string) => {
-      const newFavorites = favorites.filter((city) => city.id !== cityId);
+      const currentFavorites = Array.isArray(favorites) ? favorites : [];
+      const newFavorites = currentFavorites.filter((city) => city.id !== cityId);
       setFavorites(newFavorites);
       return newFavorites;
     },
@@ -49,10 +51,12 @@ export function useFavorites() {
   });
 
   return {
-    favorites: favoritesQuery.data,
+    favorites: Array.isArray(favoritesQuery.data) ? favoritesQuery.data : [],
     addFavorite,
     removeFavorite,
-    isFavorite: (lat: number, lon: number) =>
-      favorites.some((city) => city.lat === lat && city.lon === lon),
+    isFavorite: (lat: number, lon: number) => {
+      const currentFavorites = Array.isArray(favorites) ? favorites : [];
+      return currentFavorites.some((city) => city.lat === lat && city.lon === lon);
+    },
   };
 }

@@ -38,16 +38,16 @@ const WeatherMap3D = ({ center, zoom = 7, className, weatherData }: WeatherMap3D
     { id: 'wind', label: 'Wind Speed', type: 'wind', enabled: true },
   ]);
 
-  const apiKey = import.meta.env.VITE_OPENWEATHERMAP_API_KEY;
+  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
   // Configure viewer on mount
   useEffect(() => {
     if (viewerRef.current) {
       // Remove sky, atmosphere, and space background
       const scene = viewerRef.current.scene as Scene;
-      scene.sun.show = false;
-      scene.moon.show = false;
-      scene.skyAtmosphere.show = false;
+      if (scene.sun) scene.sun.show = false;
+      if (scene.moon) scene.moon.show = false;
+      if (scene.skyAtmosphere) scene.skyAtmosphere.show = false;
       scene.globe.enableLighting = false;
       scene.fog.enabled = false;
       scene.backgroundColor = Color.WHITE;

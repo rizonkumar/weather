@@ -71,7 +71,7 @@ ChartContainer.displayName = "Chart"
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfigType }) => {
   const colorConfig = Object.entries(config).filter(
-    ([_, config]) => config.theme || config.color
+    ([, config]) => config.theme || config.color
   )
 
   if (!colorConfig.length) {
@@ -115,8 +115,17 @@ interface LegendProps {
   nameKey?: string;
 }
 
+interface PayloadItem {
+  dataKey?: string | number
+  name?: string
+  value?: number | string
+  color?: string
+  fill?: string
+  payload?: Record<string, unknown>
+}
+
 interface TooltipContentProps {
-  labelFormatter?: (label: string | React.ReactNode, payload: any[]) => React.ReactNode
+  labelFormatter?: (label: string | React.ReactNode, payload: PayloadItem[]) => React.ReactNode
   labelClassName?: string
 }
 
@@ -158,7 +167,7 @@ const ChartTooltipContent = React.forwardRef<
         return null
       }
 
-      const [item] = payload as any[]
+      const [item] = payload as PayloadItem[]
       const key = `${labelKey || item.dataKey || item.name || "value"}`
       const itemConfig = getPayloadConfigFromPayload(config, item, key)
       const value =
@@ -203,10 +212,10 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {(payload as any[]).map((item) => {
+          {(payload as PayloadItem[]).map((item) => {
             const key = `${item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = (item as any).fill || (item as any).color || itemConfig?.color
+            const indicatorColor = item.fill || item.color || itemConfig?.color
 
             return (
               <div

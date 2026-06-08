@@ -20,7 +20,7 @@ const WeatherMap = ({ center, zoom = 7, mapType = 'temp_new' }: WeatherMapProps)
     if (!mapRef.current) return;
 
     // OpenWeatherMap API key from environment variable
-    const apiKey = import.meta.env.VITE_OPENWEATHERMAP_API_KEY;
+    const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
     // Base map layer (OpenStreetMap)
     const baseLayer = new TileLayer({
